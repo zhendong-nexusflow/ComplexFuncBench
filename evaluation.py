@@ -29,7 +29,6 @@ MODEL_MAPPING = {
     "claude-3-5-haiku-20241022": ClaudeRunner,
     "glm-4-9b-chat": GLMRunner,
     "glm-4-long": GLMAPIRunner,
-    "glm-4-flash-1m-biz": GLMAPIRunner,
     "Llama-3.1-70B": LlamaRunner,
     "Llama-3.1-8B": LlamaRunner,
     "Meta-Llama-3.1-405B-Instruct-FP8": LlamaRunner,
