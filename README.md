@@ -1,7 +1,7 @@
 # Complex Function Calling Benchmark (ComplexFuncBench)
 
 <p align="center">
-📄<a href="https://arxiv.org/..." target="_blank"> Arxiv Paper </a> • 🤗 <a href="https://huggingface.co/datasets/..." target="_blank">HF Paper</a> • 📊 <a href="https://huggingface.co/papers/..." target="_blank">Dataset</a>
+📄<a href="https://arxiv.org/abs/2501.10132" target="_blank"> Arxiv Paper </a> • 🤗 <a href="https://huggingface.co/papers/2501.10132" target="_blank">HF Paper</a> • 📊 <a href="https://huggingface.co/datasets/THUDM/ComplexFuncBench" target="_blank">Dataset</a>
 </p>
 
 
@@ -120,3 +120,15 @@ python print_results.py --result_dir {result_dir}
 
 
 ## Citation
+If you find our work helpful for your research, please consider citing our work.
+```
+@misc{zhong2025complexfuncbench,
+      title={ComplexFuncBench: Exploring Multi-Step and Constrained Function Calling under Long-Context Scenario}, 
+      author={Lucen Zhong and Zhengxiao Du and Xiaohan Zhang and Haiyi Hu and Jie Tang},
+      year={2025},
+      eprint={2501.10132},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2501.10132}, 
+}
+```
