@@ -64,10 +64,10 @@ The automated evaluation framework \texttt{ComplexEval} evaluates models' comple
 ## How to evaluate on ComplexFuncBench
 
 ### Preparation
-First, download the repository and dataset. You can download the benchmarkd dataset through the Hugging Face datasets.
+First, download the repository and dataset. You can download the benchmarkd dataset through the [HuggingFace datasets](https://huggingface.co/datasets/THUDM/ComplexFuncBench).
 
 ```shell
-git clone --recurse-submodules https://github.com/xx
+git clone https://github.com/THUDM/ComplexFuncBench.git
 cd ComplexFuncBench
 ```
 
