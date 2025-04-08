@@ -22,6 +22,8 @@ def save_json(data, dir_path):
                 f.write(json.dumps(line, ensure_ascii=False) + "\n")
 
 def decode_json(json_str):
+    if json_str is None:
+        return {}  # or any default value you prefer
     json_str = json_str.strip('```JSON\n').strip('```json\n').strip('\n```')
     json_str = json_str.replace('\n', '').replace('False', 'false').replace('True', 'true')
     try:
