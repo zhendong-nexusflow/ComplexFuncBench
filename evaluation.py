@@ -14,6 +14,7 @@ from utils.logger import Logger
 from utils.utils import *
 
 from runner.gpt_runner import GPTRunner
+from runner.nexus_runner import NexusRunner
 from runner.glm_runner import GLMRunner, GLMAPIRunner
 from runner.claude_runner import ClaudeRunner
 from runner.qwen_runner import QwenRunner
@@ -24,7 +25,7 @@ from runner.response_runner import RespEvalRunner
 MODEL_MAPPING = {
     "gpt-4o-2024-08-06": GPTRunner,
     "gpt-4-turbo-2024-04-09": GPTRunner,
-    "Nexusflow/Athene-V2-Chat": GPTRunner,
+    "Nexusflow/Athene-V2-Chat": NexusRunner,
     "claude-3-5-sonnet-20240620": ClaudeRunner,
     "claude-3-5-sonnet-20241022": ClaudeRunner,
     "claude-3-5-haiku-20241022": ClaudeRunner,
