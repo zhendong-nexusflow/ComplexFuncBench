@@ -26,6 +26,7 @@ MODEL_MAPPING = {
     "gpt-4o-2024-08-06": GPTRunner,
     "gpt-4-turbo-2024-04-09": GPTRunner,
     "Nexusflow/Athene-V2-Chat": NexusRunner,
+    "Qwen/Qwen2.5-72B-Instruct": NexusRunner,
     "claude-3-5-sonnet-20240620": ClaudeRunner,
     "claude-3-5-sonnet-20241022": ClaudeRunner,
     "claude-3-5-haiku-20241022": ClaudeRunner,
