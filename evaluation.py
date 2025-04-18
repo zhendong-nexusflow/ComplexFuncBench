@@ -55,11 +55,11 @@ def get_args():
     args = parser.parse_args()
 
     os.makedirs(f"logs/{datetime.date.today().strftime('%Y-%m-%d')}/{args.model_name}", exist_ok=True)
-    os.makedirs(f"result/{args.model_name}/{args.exp_name}/logs", exist_ok=True)
+    os.makedirs(f"result/{args.model_name}/{datetime.date.today().strftime('%Y-%m-%d')}/{args.exp_name}/logs", exist_ok=True)
 
     args.log_dir = f"logs/{datetime.date.today().strftime('%Y-%m-%d')}/{args.model_name}/{args.exp_name}.log"
-    args.output_dir = f"result/{args.model_name}/{args.exp_name}.jsonl"
-    args.log_dir = f"result/{args.model_name}/{args.exp_name}/logs"
+    args.output_dir = f"result/{args.model_name}/{datetime.date.today().strftime('%Y-%m-%d')}/{args.exp_name}.jsonl"
+    args.log_dir = f"result/{args.model_name}/{datetime.date.today().strftime('%Y-%m-%d')}/{args.exp_name}/logs"
     return args
 
 
