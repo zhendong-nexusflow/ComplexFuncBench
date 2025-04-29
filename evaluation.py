@@ -29,6 +29,7 @@ MODEL_MAPPING = {
     "Qwen/Qwen2.5-72B-Instruct": NexusRunner,
     "Nexusflow/QwQ-32B-FixChatTemplate": NexusRunner,
     "Nexusflow/QwQ-32B-LongContext": NexusRunner,
+    "Nexusflow/Qwen3-32B-YarnLongContext": NexusRunner,
     "claude-3-5-sonnet-20240620": ClaudeRunner,
     "claude-3-5-sonnet-20241022": ClaudeRunner,
     "claude-3-5-haiku-20241022": ClaudeRunner,
