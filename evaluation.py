@@ -24,6 +24,7 @@ from runner.response_runner import RespEvalRunner
 
 MODEL_MAPPING = {
     "gpt-4o-2024-08-06": GPTRunner,
+    "gpt-4.1-2025-04-14": GPTRunner,
     "gpt-4-turbo-2024-04-09": GPTRunner,
     "Nexusflow/Athene-V2-Chat": NexusRunner,
     "Qwen/Qwen2.5-72B-Instruct": NexusRunner,
