@@ -34,6 +34,7 @@ MODEL_MAPPING = {
     "claude-3-5-sonnet-20240620": ClaudeRunner,
     "claude-3-5-sonnet-20241022": ClaudeRunner,
     "claude-3-5-haiku-20241022": ClaudeRunner,
+    "claude-3-7-sonnet-20250219": ClaudeRunner,
     "glm-4-9b-chat": GLMRunner,
     "glm-4-long": GLMAPIRunner,
     "Llama-3.1-70B": LlamaRunner,
