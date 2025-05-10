@@ -8,6 +8,7 @@ import datetime
 from collections import defaultdict
 import multiprocessing
 from multiprocessing import Pool, Manager
+from multiprocessing import get_context
 from functools import partial
 
 from utils.logger import Logger
@@ -140,8 +141,9 @@ def main():
         finised_ids = []
     test_data = [d for d in test_data if d['id'] not in finised_ids]
             
+    ctx  = get_context("spawn")
     with Manager() as manager:
-        pool = Pool(processes=args.proc_num)
+        pool = ctx.Pool(processes=args.proc_num)
         process_example_partial = partial(process_example)
         results = pool.starmap(process_example_partial, [(data, args) for data in test_data])
         
