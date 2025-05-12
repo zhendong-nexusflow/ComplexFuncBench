@@ -71,12 +71,19 @@ def get_args():
     return args
 
 
-class NonDaemonPool(Pool):
-    def Process(self, *args, **kwargs):
-        proc = super().Process(*args, **kwargs)
-        # force daemon=False so nested pools are allowed
-        proc.daemon = False
-        return proc
+class NonDaemonProcess(multiprocessing.Process):
+    @property
+    def daemon(self):
+        return False
+
+    @daemon.setter
+    def daemon(self, value):
+        # Silently ignore attempts to set daemon to True
+        pass
+
+
+class MyNonDaemonPool(Pool):
+    Process = NonDaemonProcess
 
 
 def process_example(data, args):
@@ -150,14 +157,8 @@ def main():
         finised_ids = []
     test_data = [d for d in test_data if d['id'] not in finised_ids]
             
-    ctx  = get_context("spawn")
-    with Manager() as manager:
-        pool = NonDaemonPool(processes=args.proc_num)
-        process_example_partial = partial(process_example)
-        results = pool.starmap(process_example_partial, [(data, args) for data in test_data])
-        
-    pool.close()
-    pool.join()
+    with MyNonDaemonPool(processes=args.proc_num) as pool:
+        results = pool.starmap(process_example, [(data_item, args) for data_item in test_data])
 
 
 if __name__ == '__main__':
