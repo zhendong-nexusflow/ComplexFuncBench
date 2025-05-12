@@ -70,6 +70,18 @@ def get_args():
     return args
 
 
+class NonDaemonProcess(multiprocessing.Process):
+    @property
+    def daemon(self):
+        return False
+    @daemon.setter
+    def daemon(self, value):
+        pass
+
+class NonDaemonPool(Pool):
+    Process = NonDaemonProcess
+
+
 def process_example(data, args):
     log_dir = f"{args.log_dir}/{data['id']}.log"
     logger = Logger(f"evaluation_logger_{data['id']}", log_dir, logging.DEBUG)
@@ -143,7 +155,7 @@ def main():
             
     ctx  = get_context("spawn")
     with Manager() as manager:
-        pool = ctx.Pool(processes=args.proc_num)
+        pool = NonDaemonPool(processes=args.proc_num)
         process_example_partial = partial(process_example)
         results = pool.starmap(process_example_partial, [(data, args) for data in test_data])
         
