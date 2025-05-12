@@ -7,7 +7,8 @@ import logging
 import datetime
 from collections import defaultdict
 import multiprocessing
-from multiprocessing import Pool, Manager
+from multiprocessing import Manager
+from multiprocessing.pool import Pool
 from multiprocessing import get_context
 from functools import partial
 
