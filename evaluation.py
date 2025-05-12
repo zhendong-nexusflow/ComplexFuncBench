@@ -71,16 +71,12 @@ def get_args():
     return args
 
 
-class NonDaemonProcess(multiprocessing.Process):
-    @property
-    def daemon(self):
-        return False
-    @daemon.setter
-    def daemon(self, value):
-        pass
-
 class NonDaemonPool(Pool):
-    Process = NonDaemonProcess
+    def Process(self, *args, **kwargs):
+        proc = super().Process(*args, **kwargs)
+        # force daemon=False so nested pools are allowed
+        proc.daemon = False
+        return proc
 
 
 def process_example(data, args):
