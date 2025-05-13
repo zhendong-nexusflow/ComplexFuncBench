@@ -72,6 +72,9 @@ def get_args():
 
 
 class NonDaemonProcess(multiprocessing.Process):
+    def __init__(self, ctx, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    
     @property
     def daemon(self):
         return False
