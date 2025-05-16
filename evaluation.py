@@ -28,12 +28,14 @@ MODEL_MAPPING = {
     "gpt-4o-2024-08-06": GPTRunner,
     "gpt-4.1-2025-04-14": GPTRunner,
     "gpt-4-turbo-2024-04-09": GPTRunner,
+    "Nexusflow/nexus-tool-use-20241218": NexusRunner,
     "Nexusflow/Athene-V2-Chat": NexusRunner,
     "Qwen/Qwen2.5-72B-Instruct": NexusRunner,
     "Nexusflow/QwQ-32B-FixChatTemplate": NexusRunner,
     "Nexusflow/QwQ-32B-LongContext": NexusRunner,
     "Nexusflow/Qwen3-4B-YarnLongContext": NexusRunner,
     "Nexusflow/Qwen3-32B-YarnLongContext": NexusRunner,
+    "Nexusflow/250514-reasoning-adherence-expanded-bs64-step100": NexusRunner,
     "claude-3-5-sonnet-20240620": ClaudeRunner,
     "claude-3-5-sonnet-20241022": ClaudeRunner,
     "claude-3-5-haiku-20241022": ClaudeRunner,
@@ -104,7 +106,7 @@ def process_example(data, args):
             turn_count += 1
             call_count += len(turn["function_call"])
 
-    convs, message, turn_id, correct_count = model.run(data)
+    convs, message, turn_id, correct_count, adherance_and, adherance_labels = model.run(data)
 
     # API Error
     if isinstance(message, dict) and message["error_type"] == "unknown_error":
@@ -136,7 +138,9 @@ def process_example(data, args):
             "total_call_num": call_count,
             "real_turn_num": real_turn_count
         },
-        "resp_eval": resp_eval_result
+        "resp_eval": resp_eval_result,
+        "adherance_and": adherance_and,
+        "adherance_labels": adherance_labels
     }
 
     with open(args.output_dir, 'a+') as f:
@@ -149,14 +153,17 @@ def process_example(data, args):
 def main():
     args = get_args()
     test_data = load_json(args.input_file)
+    print("Using input file: ", args.input_file)
     if args.debug:
         test_data = random.sample(test_data, 10)
+    print("Length of test data: ", len(test_data))
     
     if os.path.exists(args.output_dir):
         finished_data = load_json(args.output_dir)
         finised_ids = [d["id"] for d in finished_data]
     else:
         finised_ids = []
+    print("Length of finished data: ", len(finised_ids))
     test_data = [d for d in test_data if d['id'] not in finised_ids]
             
     with MyNonDaemonPool(processes=args.proc_num) as pool:

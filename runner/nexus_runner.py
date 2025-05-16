@@ -3,13 +3,95 @@ import copy
 import json
 from models.nexus import FunctionCallNexus
 from runner.base_runner import ModelRunner
+from openai import OpenAI
+import time
+import openai
 
+REASONING_TEMPLATE = '''
+
+'''
 
 class NexusRunner(ModelRunner):
     def __init__(self, args, logger):
         super().__init__(args, logger)
         self.model_name = args.model_name
         self.model = FunctionCallNexus(self.model_name)
+
+    def measure_reasoning_adherance(self, llm_response):
+        JUDGE_TEMPLATE = \
+'''You are tasked with evaluating whether an AI assistant's reasoning trace adheres to a given template. Your goal is to carefully analyze the reasoning, provide a justification for your evaluation, and give a final verdict on the level of adherence. The reasoning trace must follow the template exactly:
+1. Does the reasoning trace structure and organize its content in the same way as the template?
+2. Is the order of the steps in the reasoning trace the same as the order of the steps in the template?
+3. Are the steps clearly labeled and separated?
+
+Output your final verdict as either "[Fully Adheres]", "[Partially Adheres]", or "[Does Not Adhere]".
+
+# Template
+1. Problem Analysis: Restate the problem clearly and list known/unknown quantities.
+2. Relevant Theorems and Knowledge: Explicitly mention relevant definitions, lemmas, or theorems needed.
+3. Roadmap to Solution: Outline a clear and logical sequence of steps for solving the problem.
+4. Step-by-Step Solution: Solve each step carefully, providing reasoning and intermediate results. You may use tools to perform symbolic or numerical computations when needed.
+5. Verification: Check and confirm your final answer using at least one alternate method or computational verification.
+
+# Assistant's Reasoning Trace
+{REASONING}
+    '''
+
+        API_RETRY_SLEEP = 10
+        API_RETRY_COUNT = 3
+
+        def verify_adherence(content: str = None, model = "gpt-4.1-2025-04-14"):
+            if content is None:
+                return False, None
+
+            think_idx = content.rfind("</think>")
+            if think_idx == -1:
+                return False, None
+            thought = content[:think_idx]
+
+            message = [{
+                "role": "user",
+                "content": JUDGE_TEMPLATE.format(REASONING=thought)
+            }]
+            
+            client = OpenAI()
+            
+            output = None
+            for _ in range(API_RETRY_COUNT):
+                try:
+                    output = client.chat.completions.create(
+                        model=model,
+                        messages=message,
+                        temperature=0.0,
+                    )
+                    content = output.choices[0].message.content
+                    break
+                except openai.RateLimitError as e:
+                    print(type(e), e)
+                    time.sleep(API_RETRY_SLEEP)
+                except openai.BadRequestError as e:
+                    print(type(e), e)
+                except KeyError:
+                    print(type(e), e)
+                    break
+            
+            if output is None:
+                return False, None
+            
+            def extract_label(output):
+                LABEL_PATTERN = re.compile(r'\[(fully adheres|partially adheres|does not adhere)\]', re.IGNORECASE)
+                
+                match = LABEL_PATTERN.findall(output.lower())
+                if match:
+                    return match[-1]
+                return None
+            
+            label = extract_label(content)
+            
+            return label == "fully adheres", label
+        message_content = llm_response.content
+        return verify_adherence(content=message_content)
+
 
     def replace_invalid_chars(self, s):
         valid_pattern = re.compile(r'[a-zA-Z0-9_-]')
@@ -44,6 +126,9 @@ class NexusRunner(ModelRunner):
         self.CompareClass.add_free_function(convs)
         gpt_functions = self.get_standard_functions(functions)
 
+        adherence_and = False
+        adherance_labels = []
+
         messages = []
         query = convs[0]['content']
         messages.append({"role": "user", "content": query})
@@ -54,7 +139,9 @@ class NexusRunner(ModelRunner):
             llm_response = self.model(messages, tools=gpt_functions)
             if llm_response is None:
                 return self.return_result(messages, {"error_type": "unknown_error", "content": "llm_response is None"})
-
+            has_adherence, adherance_label = self.measure_reasoning_adherance(llm_response)
+            adherance_labels.append(adherance_label)
+            adherence_and = adherence_and and has_adherence
             if llm_response.tool_calls:
                 if self.golden_fcs == []:
                     self.logger.error(f"Output FC:\n{llm_response.tool_calls}")
@@ -110,10 +197,10 @@ class NexusRunner(ModelRunner):
                 self.logger.info(f"Final Response: {final_response}\n")
                 messages.append({"role": "assistant", "content": final_response})
 
-                return self.return_result(messages, self.error_message)
+                return self.return_result(messages, self.error_message, adherence_and, adherance_labels)
 
             else:
-                return self.return_result(messages, {"error_type": "unknown_error", "content": "llm_response is None"})
+                return self.return_result(messages, {"error_type": "unknown_error", "content": "llm_response is None"}, adherence_and, adherance_labels)
 
 
     
