@@ -55,10 +55,11 @@ class ModelRunner:
             self.golden_fcs.extend(copy.deepcopy(self.fc_chain[self.turn_id]))
             self.golden_obs.extend(copy.deepcopy(self.obs_chain[self.turn_id])) 
     
-    def return_result(self, messages, error_info=None):
+    def return_result(self, messages, error_info=None, adherance_and=False, adherance_labels=[]):
         if error_info:
             success_turn = self.get_success_turn(self.golden_fcs, self.fc_chain)
-            return messages, error_info, success_turn, self.correct_count
+            print(f"Adherance and: {adherance_and}  Adherance labels: {adherance_labels}")
+            return messages, error_info, success_turn, self.correct_count, adherance_and, adherance_labels
 
         # free function post process
         if len(self.golden_fcs) != 0:
@@ -71,9 +72,9 @@ class ModelRunner:
         if self.turn_id < len(self.fc_chain) or len(self.golden_fcs) > 0:
             self.logger.info(f"turn id  = {self.turn_id}; len(golden_answer) = {len(self.fc_chain)}")
             self.logger.info(f"golden_function_calls = {self.golden_fcs}")
-            return self.return_result(messages, {"error_type": "stop_early", "content": "Stop early."})
+            return self.return_result(messages, {"error_type": "stop_early", "content": "Stop early."}, adherance_and, adherance_labels)
         elif len(self.golden_fcs) == 0:
-            return messages, "Success.", len(self.fc_chain), self.correct_count
+            return messages, "Success.", len(self.fc_chain), self.correct_count, adherance_and, adherance_labels
         else:
             raise NotImplementedError("Unexpected error.")
     
