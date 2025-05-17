@@ -81,7 +81,6 @@ class NonDaemonProcess(multiprocessing.Process):
 
     @daemon.setter
     def daemon(self, value):
-        # Silently ignore attempts to set daemon to True
         pass
 
 
