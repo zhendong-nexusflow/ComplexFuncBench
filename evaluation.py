@@ -36,6 +36,7 @@ MODEL_MAPPING = {
     "Nexusflow/Qwen3-4B-YarnLongContext": NexusRunner,
     "Nexusflow/Qwen3-32B-YarnLongContext": NexusRunner,
     "Nexusflow/250514-reasoning-adherence-expanded-bs64-step100": NexusRunner,
+    "Nexusflow/250521-correctness-reasoning-step100-bs64-step-70": NexusRunner,
     "claude-3-5-sonnet-20240620": ClaudeRunner,
     "claude-3-5-sonnet-20241022": ClaudeRunner,
     "claude-3-5-haiku-20241022": ClaudeRunner,
