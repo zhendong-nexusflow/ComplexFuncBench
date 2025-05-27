@@ -122,14 +122,17 @@ class CompareFCBase:
         return resp_1 == resp_2
 
     def similarity_based(self, predict, golden):
-        embedding_1 = self.embedding.encode([json.dumps(predict, ensure_ascii=False)])
-        embedding_2 = self.embedding.encode([json.dumps(golden, ensure_ascii=False)])
-        similarity = embedding_1 @ embedding_2.T
-        del embedding_1, embedding_2
-        torch.cuda.empty_cache()
-        gc.collect()
-        self.logger.debug(f"Similarity-based comparison output: {similarity[0][0]}")
-        return similarity[0][0] > 0.98
+        # Disabled: always return False (or your preferred default)
+        return False
+        
+        # embedding_1 = self.embedding.encode([json.dumps(predict, ensure_ascii=False)])
+        # embedding_2 = self.embedding.encode([json.dumps(golden, ensure_ascii=False)])
+        # similarity = embedding_1 @ embedding_2.T
+        # del embedding_1, embedding_2
+        # torch.cuda.empty_cache()
+        # gc.collect()
+        # self.logger.debug(f"Similarity-based comparison output: {similarity[0][0]}")
+        # return similarity[0][0] > 0.98
 
     def llm_based(self, functions, history, predict, golden):
         kwargs = {
@@ -245,32 +248,35 @@ class CompareFC(CompareFCBase):
             if g_index not in matched_indices:
                 remaining_golden.append(g_value)  
                 remaining_golden_index[len(remaining_golden) - 1] = g_index
-        
+
         if remaining_predict == [] or remaining_golden == []:
             return exact_matches
+
+        # Skip embedding match
+        return exact_matches
+
+        # # embedding match
+        # pred_embed = self.embedding.encode([json.dumps(value, ensure_ascii=False) for value in remaining_predict])
+        # gold_embed = self.embedding.encode([json.dumps(value, ensure_ascii=False) for value in remaining_golden])
+        # matrix = pred_embed @ gold_embed.T
         
-        # embedding match
-        pred_embed = self.embedding.encode([json.dumps(value, ensure_ascii=False) for value in remaining_predict])
-        gold_embed = self.embedding.encode([json.dumps(value, ensure_ascii=False) for value in remaining_golden])
-        matrix = pred_embed @ gold_embed.T
-        
-        del pred_embed, gold_embed
-        torch.cuda.empty_cache()
-        gc.collect()
+        # del pred_embed, gold_embed
+        # torch.cuda.empty_cache()
+        # gc.collect()
 
-        row_ind, col_ind = linear_sum_assignment(-matrix)  
+        # row_ind, col_ind = linear_sum_assignment(-matrix)  
 
-        embedding_matches = []
-        for i, j in zip(row_ind, col_ind):
-            embedding_matches.append({
-                "idx": remaining_predict_index[i],
-                "pred_call": remaining_predict[i],
-                "golden_call": remaining_golden[j],
-                "golden_obs": golden_obs[remaining_golden_index[j]]
-            })
-        matching = exact_matches + embedding_matches
+        # embedding_matches = []
+        # for i, j in zip(row_ind, col_ind):
+        #     embedding_matches.append({
+        #         "idx": remaining_predict_index[i],
+        #         "pred_call": remaining_predict[i],
+        #         "golden_call": remaining_golden[j],
+        #         "golden_obs": golden_obs[remaining_golden_index[j]]
+        #     })
+        # matching = exact_matches + embedding_matches
 
-        return matching
+        # return matching
 
     def compare_single_call(self, functions, history, pred_call, golden_call):
         self.logger.info(f"Start compare_single_call: \n{pred_call}\n{golden_call}")
