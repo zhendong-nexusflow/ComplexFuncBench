@@ -29,6 +29,7 @@ MODEL_MAPPING = {
     "gpt-4.1-2025-04-14": GPTRunner,
     "gpt-4-turbo-2024-04-09": GPTRunner,
     "Nexusflow/Athene-V2-Chat": NexusRunner,
+    "Nexusflow/nexus-tool-use-20241218": NexusRunner,
     "Qwen/Qwen2.5-72B-Instruct": NexusRunner,
     "Nexusflow/QwQ-32B-FixChatTemplate": NexusRunner,
     "Nexusflow/QwQ-32B-LongContext": NexusRunner,
