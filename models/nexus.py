@@ -56,7 +56,7 @@ class FunctionCallNexus(NexusModel):
                 temperature=0.0,
                 tools=tools,
                 tool_choice="auto",
-                max_tokens=2048
+                # max_tokens=2048
             )
             return completion.choices[0].message
         except Exception as e:
