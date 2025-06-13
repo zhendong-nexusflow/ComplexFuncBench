@@ -31,7 +31,9 @@ MODEL_MAPPING = {
     "Nexusflow/Athene-V2-Chat": NexusRunner,
     "Nexusflow/nexus-tool-use-20241218": NexusRunner,
     "Nexusflow/250521-correctness-reasoning-step100-bs64-step-70": NexusRunner,
-    "Nexusflow/250605-xlam-step170-rollouts-partial-step230": NexusRunner.
+    "Nexusflow/250605-xlam-step170-rollouts-partial-step230": NexusRunner,
+    "Nexusflow/250609-step170-xlam-merge-20-80": NexusRunner,
+    "Nexusflow/250612-apigen-mt-steps-400-230-merge-20-80-transfertohumanagent-2-step20": NexusRunner,
     "Qwen/Qwen2.5-72B-Instruct": NexusRunner,
     "Nexusflow/QwQ-32B-FixChatTemplate": NexusRunner,
     "Nexusflow/QwQ-32B-LongContext": NexusRunner,
